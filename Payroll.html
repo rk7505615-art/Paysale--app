@@ -1,0 +1,1766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Payroll — Attendance &amp; Salary</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* ==================== CSS THEME VARIABLES ==================== */
+    :root, [data-theme="emerald"] {
+      --bg-outer: #E2E8F0;
+      --bg-app: #F8FAFC;
+      --bg-card: #FFFFFF;
+      --bg-subtle: #F1F5F9;
+      --border-card: #E2E8F0;
+      --text-main: #0F172A;
+      --text-muted: #64748B;
+      --hero-from: #064E3B;
+      --hero-via: #047857;
+      --hero-to: #022C22;
+      --accent-primary: #059669;
+      --accent-soft: #ECFDF5;
+      --accent-border: #A7F3D0;
+      --accent-text: #065F46;
+      --sun-bg: #FFFBEB;
+      --sun-border: #FCD34D;
+      --sun-text: #92400E;
+      --nav-bg: rgba(255, 255, 255, 0.92);
+    }
+
+    [data-theme="obsidian"] {
+      --bg-outer: #030712;
+      --bg-app: #0B1120;
+      --bg-card: #131C31;
+      --bg-subtle: #1E293B;
+      --border-card: #26334D;
+      --text-main: #F8FAFC;
+      --text-muted: #94A3B8;
+      --hero-from: #1E1B4B;
+      --hero-via: #312E81;
+      --hero-to: #0F172A;
+      --accent-primary: #6366F1;
+      --accent-soft: rgba(99, 102, 241, 0.16);
+      --accent-border: rgba(129, 140, 248, 0.35);
+      --accent-text: #A5B4FC;
+      --sun-bg: rgba(245, 158, 11, 0.14);
+      --sun-border: rgba(251, 191, 36, 0.4);
+      --sun-text: #FCD34D;
+      --nav-bg: rgba(19, 28, 49, 0.92);
+    }
+
+    [data-theme="saffron"] {
+      --bg-outer: #E7E5E4;
+      --bg-app: #FAF7F2;
+      --bg-card: #FFFFFF;
+      --bg-subtle: #F5EFE6;
+      --border-card: #E7DEC8;
+      --text-main: #1C1917;
+      --text-muted: #78716C;
+      --hero-from: #1E1B4B;
+      --hero-via: #431407;
+      --hero-to: #7C2D12;
+      --accent-primary: #EA580C;
+      --accent-soft: #FFF7ED;
+      --accent-border: #FDBA74;
+      --accent-text: #9A3412;
+      --sun-bg: #FEF3C7;
+      --sun-border: #F59E0B;
+      --sun-text: #78350F;
+      --nav-bg: rgba(255, 255, 255, 0.94);
+    }
+
+    [data-theme="oceanic"] {
+      --bg-outer: #CBD5E1;
+      --bg-app: #F1F5F9;
+      --bg-card: #FFFFFF;
+      --bg-subtle: #E2E8F0;
+      --border-card: #CBD5E1;
+      --text-main: #0F172A;
+      --text-muted: #475569;
+      --hero-from: #0F172A;
+      --hero-via: #0369A1;
+      --hero-to: #0C4A6E;
+      --accent-primary: #0284C7;
+      --accent-soft: #F0F9FF;
+      --accent-border: #7DD3FC;
+      --accent-text: #075985;
+      --sun-bg: #FFFBEB;
+      --sun-border: #FBBF24;
+      --sun-text: #92400E;
+      --nav-bg: rgba(255, 255, 255, 0.94);
+    }
+
+    * {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .font-display {
+      font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-outer);
+      color: var(--text-main);
+      transition: background-color 0.25s ease, color 0.25s ease;
+    }
+
+    .app-shell {
+      background-color: var(--bg-app);
+      color: var(--text-main);
+      transition: background-color 0.25s ease;
+    }
+
+    .t-card {
+      background-color: var(--bg-card);
+      border-color: var(--border-card);
+      transition: background-color 0.25s ease, border-color 0.25s ease;
+    }
+
+    .t-subtle {
+      background-color: var(--bg-subtle);
+    }
+
+    .t-muted {
+      color: var(--text-muted);
+    }
+
+    .hero-gradient {
+      background: linear-gradient(135deg, var(--hero-from) 0%, var(--hero-via) 55%, var(--hero-to) 100%);
+    }
+
+    .accent-pill {
+      background-color: var(--accent-soft);
+      border-color: var(--accent-border);
+      color: var(--accent-text);
+    }
+
+    .sun-card {
+      background-color: var(--sun-bg);
+      border-color: var(--sun-border);
+      color: var(--sun-text);
+    }
+
+    .floating-nav {
+      background-color: var(--nav-bg);
+      border-color: var(--border-card);
+      backdrop-filter: blur(16px);
+    }
+
+    @keyframes pulsePop {
+      0% { transform: scale(1); }
+      40% { transform: scale(1.06); }
+      100% { transform: scale(1); }
+    }
+    .pop-flash {
+      animation: pulsePop 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+    @media print {
+      body * { visibility: hidden; }
+      #printable-payslip, #printable-payslip * { visibility: visible; }
+      #printable-payslip {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100%;
+        background: #ffffff !important;
+        color: #0f172a !important;
+        padding: 18px !important;
+        border: none !important;
+        box-shadow: none !important;
+      }
+      .no-print { display: none !important; }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex justify-center items-start sm:py-5">
+
+  <!-- Mobile App Container -->
+  <div id="app-container" class="app-shell w-full max-w-md min-h-screen sm:min-h-[860px] sm:rounded-[34px] sm:shadow-2xl sm:border sm:border-slate-400/30 flex flex-col relative overflow-hidden">
+
+    <!-- ==================== LUXURY GLASSMORPHIC HERO HEADER ==================== -->
+    <header class="hero-gradient text-white px-4 pt-4 pb-5 rounded-b-[32px] shadow-xl relative z-20">
+      <!-- Top Bar: Brand + Theme Switcher Pill -->
+      <div class="flex items-center justify-between gap-2 mb-3.5">
+        <div class="flex items-center gap-2.5">
+          <div class="w-10 h-10 rounded-2xl bg-white/15 backdrop-blur-md border border-white/25 flex items-center justify-center shadow-inner">
+            <span class="font-display font-extrabold text-lg text-amber-300">₹</span>
+          </div>
+          <div>
+            <div class="flex items-center gap-1.5">
+              <h1 class="font-display text-base font-extrabold tracking-tight leading-none">Payroll</h1>
+              <span class="text-[9px] font-black uppercase tracking-wider bg-white/15 px-1.5 py-0.5 rounded-md text-emerald-200">Pro</span>
+            </div>
+            <p class="text-[10px] text-white/75 font-medium mt-1">26d (9:30h) • Sun (8:30h) • Basic PF</p>
+          </div>
+        </div>
+
+        <!-- Theme Switcher Button -->
+        <button type="button" onclick="toggleThemeDrawer()"
+          class="flex items-center gap-1.5 bg-white/15 hover:bg-white/25 backdrop-blur-md px-3 py-2 rounded-2xl border border-white/25 text-xs font-extrabold transition active:scale-95">
+          <span id="theme-dot-preview" class="w-2.5 h-2.5 rounded-full bg-emerald-400 ring-2 ring-white/60"></span>
+          <span id="theme-name-label">Emerald</span>
+          <svg class="w-3.5 h-3.5 opacity-80" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+      </div>
+
+      <!-- Month Stepper Pill -->
+      <div class="flex items-center justify-between bg-black/20 backdrop-blur-md rounded-2xl p-1 border border-white/15 mb-3.5">
+        <button type="button" onclick="stepMonth(-1)" aria-label="Previous Month"
+          class="w-9 h-8 rounded-xl bg-white/10 hover:bg-white/20 flex items-center justify-center font-black text-sm active:scale-90 transition">
+          ‹
+        </button>
+
+        <select id="month-selector" onchange="handleMonthChange(this.value)"
+          class="bg-transparent text-white text-xs font-extrabold tracking-wide text-center focus:outline-none cursor-pointer px-2">
+          <option value="2026-01" class="text-slate-900">January 2026 (31 Days)</option>
+          <option value="2026-02" class="text-slate-900">February 2026 (28 Days)</option>
+          <option value="2026-03" class="text-slate-900">March 2026 (31 Days)</option>
+          <option value="2026-04" class="text-slate-900">April 2026 (30 Days)</option>
+          <option value="2026-05" class="text-slate-900">May 2026 (31 Days)</option>
+          <option value="2026-06" class="text-slate-900">June 2026 (30 Days)</option>
+          <option value="2026-07" class="text-slate-900">July 2026 (31 Days)</option>
+          <option value="2026-08" class="text-slate-900">August 2026 (31 Days)</option>
+          <option value="2026-09" class="text-slate-900">September 2026 (30 Days)</option>
+          <option value="2026-10" class="text-slate-900">October 2026 (31 Days)</option>
+          <option value="2026-11" class="text-slate-900" selected>November 2026 (30 Days)</option>
+          <option value="2026-12" class="text-slate-900">December 2026 (31 Days)</option>
+          <option value="2027-01" class="text-slate-900">January 2027 (31 Days)</option>
+          <option value="2027-02" class="text-slate-900">February 2027 (28 Days)</option>
+        </select>
+
+        <button type="button" onclick="stepMonth(1)" aria-label="Next Month"
+          class="w-9 h-8 rounded-xl bg-white/10 hover:bg-white/20 flex items-center justify-center font-black text-sm active:scale-90 transition">
+          ›
+        </button>
+      </div>
+
+      <!-- Floating Glassmorphic Net Salary Hero Card -->
+      <div class="bg-white/12 backdrop-blur-xl rounded-3xl p-4 border border-white/20 shadow-lg">
+        <div class="flex items-start justify-between gap-2">
+          <div>
+            <span class="text-[10px] uppercase tracking-widest font-bold text-white/75 block">Net In-Hand Salary</span>
+            <div id="hdr-net-salary" class="font-display text-4xl font-extrabold tracking-tight text-white leading-none mt-1.5">
+              ₹0
+            </div>
+          </div>
+
+          <div class="text-right">
+            <span id="hdr-duty-counter" class="inline-block text-[11px] font-extrabold bg-white/20 text-white px-3 py-1 rounded-full border border-white/20">
+              0.0d + 0 Sun
+            </span>
+            <p id="hdr-rate-hint" class="text-[10px] text-white/75 font-semibold mt-1.5">
+              ₹905/d • Sun ₹809.74
+            </p>
+          </div>
+        </div>
+
+        <!-- Monthly Duty Progress Bar -->
+        <div class="mt-3.5">
+          <div class="flex justify-between text-[10px] font-bold text-white/80 mb-1">
+            <span id="hdr-progress-label">0.0 / 26 Working Days</span>
+            <span id="hdr-progress-pct">0%</span>
+          </div>
+          <div class="w-full h-2 bg-black/25 rounded-full overflow-hidden p-0.5">
+            <div id="hdr-progress-bar" class="h-full bg-gradient-to-r from-emerald-300 via-amber-300 to-amber-400 rounded-full transition-all duration-300" style="width: 0%"></div>
+          </div>
+        </div>
+
+        <!-- Side-by-Side Gross vs PF Mini Cards -->
+        <div class="grid grid-cols-2 gap-2.5 mt-3.5 pt-3 border-t border-white/15">
+          <div class="bg-black/20 rounded-2xl px-3 py-2">
+            <span class="text-[10px] text-white/70 font-semibold block">Gross Earnings</span>
+            <span id="hdr-gross-salary" class="text-sm font-black text-white">₹0.00</span>
+          </div>
+          <div class="bg-black/20 rounded-2xl px-3 py-2 text-right">
+            <span class="text-[10px] text-white/70 font-semibold block">PF (12% Basic)</span>
+            <span id="hdr-pf-deducted" class="text-sm font-black text-rose-300">- ₹0.00</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Toast Notification -->
+    <div id="toast-banner" class="hidden fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-slate-900 text-white text-xs font-extrabold px-4 py-2.5 rounded-full shadow-2xl border border-white/15">
+      Updated!
+    </div>
+
+    <!-- ==================== SCROLLABLE CONTENT AREA ==================== -->
+    <main class="flex-1 overflow-y-auto no-scrollbar px-4 pt-4 pb-28 space-y-4">
+
+      <!-- ==================== TAB 1: ATTENDANCE & PAY ==================== -->
+      <section id="view-attendance" class="space-y-4">
+
+        <!-- Dedicated Highlighted Sunday Duty Earnings Card -->
+        <div class="sun-card rounded-3xl p-3.5 border shadow-xs flex items-center justify-between gap-3">
+          <div class="flex items-center gap-3">
+            <div class="w-11 h-11 rounded-2xl bg-amber-500/20 border border-amber-500/30 flex items-center justify-center shrink-0">
+              <span class="text-lg">☀️</span>
+            </div>
+            <div>
+              <div class="flex items-center gap-1.5">
+                <h2 class="text-xs font-black uppercase tracking-wide">Sunday Duty Earnings</h2>
+                <span class="text-[9px] font-black px-1.5 py-0.5 rounded bg-amber-500/20">8:30h</span>
+              </div>
+              <p id="sun-card-sub" class="text-[11px] opacity-85 font-semibold mt-0.5">
+                0 Sundays Worked • ₹809.74 / Sun
+              </p>
+            </div>
+          </div>
+          <div class="text-right shrink-0">
+            <span class="text-[9px] uppercase font-bold opacity-75 block">Alag Pay</span>
+            <span id="sun-card-total" class="font-display text-lg font-extrabold">+₹0</span>
+          </div>
+        </div>
+
+        <!-- Streamlined Today / Selected Date Quick-Punch Bar -->
+        <div class="t-card rounded-3xl p-4 border shadow-xs space-y-3">
+          <div class="flex items-center justify-between">
+            <div>
+              <span class="text-[10px] font-extrabold uppercase tracking-wider t-muted block">Selected Date Quick Punch</span>
+              <h3 id="qp-date-title" class="font-display text-sm font-extrabold mt-0.5">22 Nov 2026 • Sunday</h3>
+            </div>
+            <span id="qp-day-net-badge" class="accent-pill text-xs font-black px-3 py-1 rounded-xl border">
+              Unmarked • ₹0
+            </span>
+          </div>
+
+          <div id="qp-buttons-container" class="grid grid-cols-3 gap-2"></div>
+        </div>
+
+        <!-- Redesigned Interactive Monthly Attendance Calendar -->
+        <div class="t-card rounded-3xl p-4 border shadow-xs space-y-3">
+          <div class="flex items-center justify-between gap-2">
+            <div>
+              <h3 class="font-display text-sm font-extrabold">Attendance Calendar</h3>
+              <p id="cal-tap-hint" class="text-[11px] t-muted">1-Tap Cycle ON • Tap any date tile</p>
+            </div>
+
+            <!-- 1-Tap vs Detailed Modal Switch -->
+            <label class="accent-pill flex items-center gap-1.5 px-3 py-1.5 rounded-2xl border cursor-pointer select-none">
+              <input id="one-tap-mode" type="checkbox" checked onchange="updateTapModeHint()" class="w-3.5 h-3.5 accent-emerald-600 rounded" />
+              <span class="text-[10px] font-extrabold">1-Tap Mode</span>
+            </label>
+          </div>
+
+          <!-- Weekday Headers -->
+          <div class="grid grid-cols-7 gap-1.5 text-center pt-1">
+            <div class="sun-card border rounded-xl py-1.5 text-[9px] font-black leading-tight">
+              SUN<br><span id="sun-header-rate" class="text-[8px] opacity-85">₹810</span>
+            </div>
+            <div class="py-1.5 text-[10px] font-extrabold t-muted flex items-center justify-center">MON</div>
+            <div class="py-1.5 text-[10px] font-extrabold t-muted flex items-center justify-center">TUE</div>
+            <div class="py-1.5 text-[10px] font-extrabold t-muted flex items-center justify-center">WED</div>
+            <div class="py-1.5 text-[10px] font-extrabold t-muted flex items-center justify-center">THU</div>
+            <div class="py-1.5 text-[10px] font-extrabold t-muted flex items-center justify-center">FRI</div>
+            <div class="py-1.5 text-[10px] font-extrabold t-muted flex items-center justify-center">SAT</div>
+          </div>
+
+          <!-- Large Rounded-2xl Day Tiles Grid -->
+          <div id="calendar-grid" class="grid grid-cols-7 gap-1.5"></div>
+
+          <!-- Legend & Quick Bulk / Edit Row -->
+          <div class="flex items-center justify-between pt-2 border-t border-slate-200/60 text-[10px]">
+            <div class="flex flex-wrap items-center gap-2 font-extrabold t-muted">
+              <span class="text-emerald-500">● P: ₹905</span>
+              <span class="text-amber-500">● HD: ₹453</span>
+              <span class="text-purple-500">★ SW: +₹810</span>
+              <span class="text-rose-500">● A: ₹0</span>
+            </div>
+            <button type="button" onclick="openDateDrawer(state.selectedDay)"
+              class="font-black underline text-indigo-500">
+              +OT / Modal
+            </button>
+          </div>
+        </div>
+
+        <!-- Live Salary Breakdown Card -->
+        <div class="t-card rounded-3xl p-4 border shadow-xs space-y-3">
+          <div class="flex items-center justify-between pb-2 border-b border-slate-200/60">
+            <h3 class="font-display text-sm font-extrabold">Live Salary Breakdown</h3>
+            <span id="brk-month-tag" class="accent-pill text-[10px] font-extrabold px-2.5 py-0.5 rounded-full border">
+              Nov 2026
+            </span>
+          </div>
+
+          <div class="space-y-2.5 text-xs">
+            <div class="flex justify-between items-center">
+              <span id="brk-basic-label" class="t-muted">Weekday Basic (0.0d × ₹576.92)</span>
+              <span id="brk-basic-val" class="font-extrabold">₹0.00</span>
+            </div>
+
+            <div class="flex justify-between items-center">
+              <span id="brk-da-label" class="t-muted">Weekday DA (0.0d × ₹328.08)</span>
+              <span id="brk-da-val" class="font-extrabold">₹0.00</span>
+            </div>
+
+            <div class="sun-card flex justify-between items-center border rounded-2xl px-3 py-2.5">
+              <div>
+                <span class="font-black block">★ Sunday Duty Pay (Alag)</span>
+                <span id="brk-sunday-sub" class="text-[10px] opacity-80 font-semibold">0 Sun × 8:30h @ ₹95.26/hr</span>
+              </div>
+              <span id="brk-sunday-val" class="text-sm font-black">+ ₹0.00</span>
+            </div>
+
+            <div class="flex justify-between items-center">
+              <span id="brk-ot-label" class="t-muted">Overtime Earnings (0.0h × ₹95.26/hr)</span>
+              <span id="brk-ot-val" class="font-bold text-sky-500">+ ₹0.00</span>
+            </div>
+
+            <div class="flex justify-between items-center pt-2.5 border-t border-slate-200/60 text-sm">
+              <span class="font-black">Total Gross Salary</span>
+              <span id="brk-gross-val" class="font-black text-emerald-500">₹0.00</span>
+            </div>
+
+            <div class="flex justify-between items-center pt-1">
+              <span id="brk-pf-label" class="t-muted">Less: EPF @ 12% (on Basic only)</span>
+              <span id="brk-pf-val" class="font-extrabold text-rose-500">- ₹0.00</span>
+            </div>
+
+            <div id="brk-other-ded-row" class="hidden flex justify-between items-center">
+              <span class="t-muted">Less: PT / Advance</span>
+              <span id="brk-other-ded-val" class="font-extrabold text-rose-500">- ₹0.00</span>
+            </div>
+          </div>
+
+          <div class="hero-gradient text-white rounded-2xl p-3.5 flex items-center justify-between shadow-md">
+            <div>
+              <span class="text-[10px] uppercase tracking-wider text-white/75 font-bold block">Net Take-Home Pay</span>
+              <span class="text-[11px] text-emerald-200 font-medium">Real-time from attendance</span>
+            </div>
+            <span id="brk-net-val" class="font-display text-2xl font-extrabold text-white">₹0</span>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ==================== TAB 2: DAILY LEDGER ==================== -->
+      <section id="view-register" class="hidden space-y-3.5">
+        <div class="flex items-center justify-between">
+          <div>
+            <h2 class="font-display text-base font-extrabold">Daily Attendance Ledger</h2>
+            <p class="text-xs t-muted">Filter & inspect every day's Basic, DA, Sun & PF</p>
+          </div>
+          <span id="reg-month-pill" class="accent-pill text-xs font-extrabold px-3 py-1 rounded-full border">
+            Nov 2026
+          </span>
+        </div>
+
+        <!-- Search & Filter Pills -->
+        <div class="t-card rounded-3xl p-3 border space-y-2.5">
+          <input id="ledger-search" type="text" placeholder="Search date (e.g. 15, Sun, P, SW)..." oninput="renderLedgerOnly()"
+            class="t-subtle w-full px-3.5 py-2 rounded-2xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+          <div class="flex gap-1.5 overflow-x-auto no-scrollbar">
+            <button type="button" onclick="setLedgerFilter('ALL')" data-lfilter="ALL" class="ledger-chip px-3 py-1.5 rounded-xl text-[11px] font-extrabold bg-emerald-600 text-white shrink-0">All Days</button>
+            <button type="button" onclick="setLedgerFilter('WORKED')" data-lfilter="WORKED" class="ledger-chip t-subtle px-3 py-1.5 rounded-xl text-[11px] font-bold shrink-0">Worked Only</button>
+            <button type="button" onclick="setLedgerFilter('SUNDAYS')" data-lfilter="SUNDAYS" class="ledger-chip t-subtle px-3 py-1.5 rounded-xl text-[11px] font-bold shrink-0">Sundays Only</button>
+            <button type="button" onclick="setLedgerFilter('UNMARKED')" data-lfilter="UNMARKED" class="ledger-chip t-subtle px-3 py-1.5 rounded-xl text-[11px] font-bold shrink-0">Unmarked</button>
+          </div>
+        </div>
+
+        <!-- Ledger Summary Strip -->
+        <div class="grid grid-cols-4 gap-2 t-card p-3 rounded-3xl border text-center">
+          <div>
+            <span class="text-[10px] t-muted font-bold block">Duty Days</span>
+            <span id="reg-sum-days" class="text-xs font-black text-emerald-500">0.0d</span>
+          </div>
+          <div>
+            <span class="text-[10px] t-muted font-bold block">Sun Pay</span>
+            <span id="reg-sum-sun" class="text-xs font-black text-amber-500">₹0</span>
+          </div>
+          <div>
+            <span class="text-[10px] t-muted font-bold block">PF (12%)</span>
+            <span id="reg-sum-pf" class="text-xs font-black text-rose-500">₹0</span>
+          </div>
+          <div>
+            <span class="text-[10px] t-muted font-bold block">Net Total</span>
+            <span id="reg-sum-net" class="text-xs font-black">₹0</span>
+          </div>
+        </div>
+
+        <!-- Ledger Table -->
+        <div class="t-card rounded-3xl border shadow-xs overflow-hidden">
+          <div class="overflow-x-auto max-h-[56vh] overflow-y-auto">
+            <table class="w-full text-left border-collapse">
+              <thead class="sticky top-0 z-10 bg-slate-900 text-white text-[9px] uppercase tracking-wider">
+                <tr>
+                  <th class="py-3 px-2.5 font-bold">Date</th>
+                  <th class="py-3 px-1 font-bold text-center">Sts</th>
+                  <th class="py-3 px-1.5 font-bold text-right">Basic</th>
+                  <th class="py-3 px-1.5 font-bold text-right">DA</th>
+                  <th class="py-3 px-1.5 font-bold text-right text-amber-300">Sun/OT</th>
+                  <th class="py-3 px-1.5 font-bold text-right text-rose-300">PF</th>
+                  <th class="py-3 px-2.5 font-bold text-right text-emerald-300">Net ₹</th>
+                </tr>
+              </thead>
+              <tbody id="register-tbody" class="divide-y divide-slate-200/40 text-[11px]"></tbody>
+              <tfoot id="register-tfoot" class="sticky bottom-0 bg-slate-900 text-white text-[10px] font-black"></tfoot>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== TAB 3: PACKAGE & SLIP ==================== -->
+      <section id="view-payslip" class="hidden space-y-4">
+
+        <!-- Local Data Backup & Restore -->
+        <div class="t-card rounded-3xl p-4 border shadow-xs space-y-2.5 no-print">
+          <div>
+            <h2 class="font-display text-sm font-extrabold">Data Backup & Restore</h2>
+            <p class="text-[10px] t-muted mt-1">Save a copy of your attendance and salary settings on your phone.</p>
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <button type="button" onclick="exportPayrollBackup()"
+              class="py-3 px-2 rounded-2xl bg-emerald-600 text-white text-[11px] font-extrabold active:scale-95">
+              ⬇ Backup Data
+            </button>
+            <button type="button" onclick="document.getElementById('backup-file-input').click()"
+              class="py-3 px-2 rounded-2xl bg-sky-600 text-white text-[11px] font-extrabold active:scale-95">
+              ⬆ Restore Data
+            </button>
+          </div>
+          <input id="backup-file-input" type="file" accept="application/json,.json" class="hidden" onchange="importPayrollBackup(event)" />
+          <p class="text-[10px] t-muted">Important: Chrome history deletion normally does not delete app data. Clearing this website's storage can delete it, so keep a backup.</p>
+        </div>
+
+        <!-- Quick Bulk Attendance Actions -->
+        <div class="t-card rounded-3xl p-4 border shadow-xs space-y-2.5 no-print">
+          <span class="text-[10px] font-extrabold uppercase tracking-wider t-muted block">Quick Month Attendance Shortcuts</span>
+          <div class="grid grid-cols-3 gap-2">
+            <button type="button" onclick="bulkMarkWeekdaysPresent()"
+              class="py-2.5 px-2 rounded-2xl bg-emerald-500/15 text-emerald-600 border border-emerald-500/30 text-[11px] font-extrabold active:scale-95 transition">
+              ✓ All Mon–Sat
+            </button>
+            <button type="button" onclick="bulkMarkSundaysWorked()"
+              class="py-2.5 px-2 rounded-2xl bg-amber-500/15 text-amber-600 border border-amber-500/30 text-[11px] font-extrabold active:scale-95 transition">
+              ★ All Sundays
+            </button>
+            <button type="button" onclick="bulkClearMonth()"
+              class="py-2.5 px-2 rounded-2xl bg-rose-500/15 text-rose-600 border border-rose-500/30 text-[11px] font-extrabold active:scale-95 transition">
+              ↺ Reset ₹0
+            </button>
+          </div>
+        </div>
+
+        <!-- 26-Day Package & PF Settings Card -->
+        <div class="t-card rounded-3xl p-4 border shadow-xs space-y-3 no-print">
+          <div class="flex items-center justify-between">
+            <h2 class="font-display text-sm font-extrabold">26-Day Salary & PF Settings</h2>
+            <button type="button" onclick="resetToStandard23530()"
+              class="accent-pill text-[11px] font-extrabold px-2.5 py-1 rounded-xl border active:scale-95">
+              Reset ₹23,530
+            </button>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2.5">
+            <div>
+              <label class="block text-[10px] font-bold t-muted mb-1">Employee Name</label>
+              <input id="inp-emp-name" type="text" value="Rahul Sharma" oninput="updateSettingsFromInputs()"
+                class="t-subtle w-full px-3 py-2 text-xs font-bold rounded-2xl focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+            <div>
+              <label class="block text-[10px] font-bold t-muted mb-1">Employee ID</label>
+              <input id="inp-emp-id" type="text" value="EMP-104" oninput="updateSettingsFromInputs()"
+                class="t-subtle w-full px-3 py-2 text-xs font-bold rounded-2xl focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2.5">
+            <div>
+              <label class="block text-[10px] font-bold t-muted mb-1">Base Basic (26 Days ₹)</label>
+              <input id="inp-base-basic" type="number" min="0" step="100" value="15000" oninput="updateSettingsFromInputs()"
+                class="t-subtle w-full px-3 py-2 text-sm font-extrabold rounded-2xl focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+            <div>
+              <label class="block text-[10px] font-bold t-muted mb-1">Base DA (26 Days ₹)</label>
+              <input id="inp-base-da" type="number" min="0" step="10" value="8530" oninput="updateSettingsFromInputs()"
+                class="t-subtle w-full px-3 py-2 text-sm font-extrabold rounded-2xl focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2.5">
+            <div>
+              <label class="block text-[10px] font-bold t-muted mb-1">Prof. Tax (PT ₹)</label>
+              <input id="inp-pt" type="number" min="0" step="50" value="0" oninput="updateSettingsFromInputs()"
+                class="t-subtle w-full px-3 py-2 text-xs font-bold rounded-2xl focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+            <div>
+              <label class="block text-[10px] font-bold t-muted mb-1">Advance / Loan (₹)</label>
+              <input id="inp-advance" type="number" min="0" step="100" value="0" oninput="updateSettingsFromInputs()"
+                class="t-subtle w-full px-3 py-2 text-xs font-bold rounded-2xl focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+          </div>
+
+          <!-- PF Toggles -->
+          <div class="space-y-2 pt-1 text-xs">
+            <label class="t-subtle flex items-center justify-between px-3.5 py-2.5 rounded-2xl cursor-pointer">
+              <div>
+                <span class="font-bold block">PF on Sunday Duty Basic too?</span>
+                <span class="text-[10px] t-muted">Default OFF (PF strictly on Weekday Basic)</span>
+              </div>
+              <input id="chk-pf-sunday" type="checkbox" onchange="updateSettingsFromInputs()" class="w-4 h-4 accent-emerald-600 rounded" />
+            </label>
+
+            <label class="t-subtle flex items-center justify-between px-3.5 py-2.5 rounded-2xl cursor-pointer">
+              <div>
+                <span class="font-bold block">Cap Monthly PF at ₹1,800 (₹15k limit)</span>
+                <span class="text-[10px] t-muted">Optional statutory ceiling for 27-day months</span>
+              </div>
+              <input id="chk-pf-cap" type="checkbox" onchange="updateSettingsFromInputs()" class="w-4 h-4 accent-emerald-600 rounded" />
+            </label>
+          </div>
+        </div>
+
+        <!-- Per-Day & Hourly Auto Rate Card -->
+        <div class="t-card rounded-3xl p-4 border shadow-xs space-y-2.5 no-print">
+          <div class="flex items-center justify-between">
+            <span class="font-display text-xs font-extrabold">Per-Day & Hourly Rate Card</span>
+            <span id="rate-card-hourly" class="accent-pill text-[11px] font-extrabold px-2.5 py-0.5 rounded-full border">
+              ₹95.26 / hr
+            </span>
+          </div>
+          <div class="grid grid-cols-3 gap-2 text-center">
+            <div class="t-subtle rounded-2xl p-2">
+              <span class="text-[10px] t-muted font-bold block">Daily Basic</span>
+              <span id="rate-card-basic" class="text-xs font-black">₹576.92</span>
+            </div>
+            <div class="t-subtle rounded-2xl p-2">
+              <span class="text-[10px] t-muted font-bold block">Daily DA</span>
+              <span id="rate-card-da" class="text-xs font-black">₹328.08</span>
+            </div>
+            <div class="accent-pill border rounded-2xl p-2">
+              <span class="text-[10px] font-bold block">Duty (9:30h)</span>
+              <span id="rate-card-weekday" class="text-xs font-black">₹905.00</span>
+            </div>
+            <div class="sun-card border rounded-2xl p-2">
+              <span class="text-[10px] font-bold block">Sun (8:30h)</span>
+              <span id="rate-card-sunday" class="text-xs font-black">₹809.74</span>
+            </div>
+            <div class="bg-rose-500/10 border border-rose-500/20 rounded-2xl p-2">
+              <span class="text-[10px] text-rose-500 font-bold block">Daily PF</span>
+              <span id="rate-card-pf" class="text-xs font-black text-rose-500">-₹69.23</span>
+            </div>
+            <div class="bg-emerald-500/10 border border-emerald-500/20 rounded-2xl p-2">
+              <span class="text-[10px] text-emerald-500 font-bold block">Daily Net</span>
+              <span id="rate-card-net" class="text-xs font-black text-emerald-500">₹835.77</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Printable Official Salary Slip -->
+        <div id="printable-payslip" class="t-card rounded-3xl p-4 border-2 shadow-sm space-y-3">
+          <div class="text-center border-b-2 border-slate-300/60 pb-2.5">
+            <h3 class="font-display text-sm font-black uppercase tracking-wider">MONTHLY SALARY & ATTENDANCE SLIP</h3>
+            <p id="slip-month-title" class="text-xs font-extrabold text-emerald-500 mt-0.5">NOVEMBER 2026</p>
+          </div>
+
+          <div class="t-subtle grid grid-cols-2 gap-2 text-xs p-3 rounded-2xl">
+            <div>
+              <span class="text-[10px] t-muted block">Employee</span>
+              <span id="slip-emp-name" class="font-extrabold">Rahul Sharma (EMP-104)</span>
+            </div>
+            <div class="text-right">
+              <span class="text-[10px] t-muted block">Attendance Punched</span>
+              <span id="slip-att-summary" class="font-extrabold text-emerald-500">0.0d + 0 Sun</span>
+            </div>
+          </div>
+
+          <div class="space-y-1.5 text-xs">
+            <div class="flex justify-between py-1 border-b border-slate-200/40">
+              <span class="t-muted">Earned Basic Salary (26-Day Basis)</span>
+              <span id="slip-basic" class="font-bold">₹0.00</span>
+            </div>
+            <div class="flex justify-between py-1 border-b border-slate-200/40">
+              <span class="t-muted">Earned Dearness Allowance (DA)</span>
+              <span id="slip-da" class="font-bold">₹0.00</span>
+            </div>
+            <div class="sun-card flex justify-between py-2 px-2.5 rounded-xl border">
+              <span class="font-extrabold">Sunday Duty Pay (8:30h Alag)</span>
+              <span id="slip-sunday" class="font-black">₹0.00</span>
+            </div>
+            <div class="flex justify-between py-1 border-b border-slate-200/40">
+              <span class="t-muted">Overtime (OT) Earnings</span>
+              <span id="slip-ot" class="font-bold">₹0.00</span>
+            </div>
+            <div class="accent-pill flex justify-between py-2 px-2.5 rounded-xl border font-black">
+              <span>GROSS SALARY</span>
+              <span id="slip-gross">₹0.00</span>
+            </div>
+            <div class="flex justify-between py-1 border-b border-slate-200/40 text-rose-500">
+              <span>EPF Deduction (12% on Basic)</span>
+              <span id="slip-pf" class="font-bold">- ₹0.00</span>
+            </div>
+            <div class="flex justify-between py-1 border-b border-slate-200/40 text-rose-500">
+              <span>Other Deductions (PT / Advance)</span>
+              <span id="slip-other-ded" class="font-bold">- ₹0.00</span>
+            </div>
+          </div>
+
+          <div class="hero-gradient text-white p-3.5 rounded-2xl flex items-center justify-between">
+            <span class="text-xs font-extrabold uppercase tracking-wider text-white/80">Net Take-Home Pay</span>
+            <span id="slip-net" class="font-display text-xl font-black">₹0</span>
+          </div>
+        </div>
+
+        <!-- Export / Share Buttons -->
+        <div class="grid grid-cols-2 gap-2.5 no-print">
+          <button type="button" onclick="copyWhatsAppSummary()"
+            class="py-3.5 px-3 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs shadow-md active:scale-95 transition">
+            Copy WhatsApp Slip
+          </button>
+          <button type="button" onclick="window.print()"
+            class="py-3.5 px-3 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-xs shadow-md active:scale-95 transition">
+            Print / Save PDF
+          </button>
+        </div>
+
+      </section>
+
+    </main>
+
+    <!-- ==================== FLOATING 3-TAB BOTTOM NAVIGATION ==================== -->
+    <div class="px-4 pb-3 pt-1 sticky bottom-0 z-30 no-print pointer-events-none">
+      <nav class="floating-nav pointer-events-auto rounded-3xl border shadow-xl p-1.5 grid grid-cols-3 gap-1">
+        <button type="button" id="nav-attendance" onclick="switchView('attendance')"
+          class="flex flex-col items-center justify-center py-2 rounded-2xl accent-pill font-extrabold text-[11px] transition">
+          <span class="text-base leading-none mb-1">📅</span>
+          <span>Attendance & Pay</span>
+        </button>
+        <button type="button" id="nav-register" onclick="switchView('register')"
+          class="flex flex-col items-center justify-center py-2 rounded-2xl t-muted font-bold text-[11px] transition">
+          <span class="text-base leading-none mb-1">📊</span>
+          <span>Daily Ledger</span>
+        </button>
+        <button type="button" id="nav-payslip" onclick="switchView('payslip')"
+          class="flex flex-col items-center justify-center py-2 rounded-2xl t-muted font-bold text-[11px] transition">
+          <span class="text-base leading-none mb-1">🧾</span>
+          <span>Package & Slip</span>
+        </button>
+      </nav>
+    </div>
+
+    <!-- ==================== THEME PICKER DRAWER ==================== -->
+    <div id="theme-drawer" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-end sm:items-center justify-center">
+      <div class="t-card w-full max-w-md rounded-t-3xl sm:rounded-3xl p-5 border shadow-2xl space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-200/40 pb-3">
+          <div>
+            <span class="text-[10px] font-black uppercase tracking-widest t-muted block">Personalize Look</span>
+            <h3 class="font-display text-base font-extrabold mt-0.5">Choose Payroll Theme</h3>
+          </div>
+          <button type="button" onclick="toggleThemeDrawer()" class="t-subtle w-9 h-9 rounded-full font-black">✕</button>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2.5">
+          <button type="button" onclick="applyTheme('emerald')" data-theme-btn="emerald"
+            class="theme-opt p-3.5 rounded-2xl border-2 text-left transition active:scale-95">
+            <div class="flex items-center gap-2 mb-1.5">
+              <span class="w-4 h-4 rounded-full bg-emerald-700 ring-2 ring-emerald-200"></span>
+              <span class="text-xs font-black">Emerald Vault</span>
+            </div>
+            <p class="text-[10px] t-muted">Deep forest & ivory wealth theme</p>
+          </button>
+
+          <button type="button" onclick="applyTheme('obsidian')" data-theme-btn="obsidian"
+            class="theme-opt p-3.5 rounded-2xl border-2 text-left transition active:scale-95">
+            <div class="flex items-center gap-2 mb-1.5">
+              <span class="w-4 h-4 rounded-full bg-indigo-500 ring-2 ring-slate-700"></span>
+              <span class="text-xs font-black">Royal Obsidian</span>
+            </div>
+            <p class="text-[10px] t-muted">Sleek dark fintech mode</p>
+          </button>
+
+          <button type="button" onclick="applyTheme('saffron')" data-theme-btn="saffron"
+            class="theme-opt p-3.5 rounded-2xl border-2 text-left transition active:scale-95">
+            <div class="flex items-center gap-2 mb-1.5">
+              <span class="w-4 h-4 rounded-full bg-orange-600 ring-2 ring-amber-200"></span>
+              <span class="text-xs font-black">Saffron Ledger</span>
+            </div>
+            <p class="text-[10px] t-muted">Warm sand & Indian executive</p>
+          </button>
+
+          <button type="button" onclick="applyTheme('oceanic')" data-theme-btn="oceanic"
+            class="theme-opt p-3.5 rounded-2xl border-2 text-left transition active:scale-95">
+            <div class="flex items-center gap-2 mb-1.5">
+              <span class="w-4 h-4 rounded-full bg-sky-600 ring-2 ring-sky-200"></span>
+              <span class="text-xs font-black">Oceanic Slate</span>
+            </div>
+            <p class="text-[10px] t-muted">Clean Nordic daylight cobalt</p>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== DATE ACTION & OT MODAL DRAWER ==================== -->
+    <div id="date-drawer" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-end sm:items-center justify-center">
+      <div class="t-card w-full max-w-md rounded-t-3xl sm:rounded-3xl p-5 border shadow-2xl space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-200/40 pb-3">
+          <div>
+            <span id="drawer-day-type" class="accent-pill text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-lg border">Weekday</span>
+            <h3 id="drawer-date-heading" class="font-display text-base font-extrabold mt-1">22 Nov 2026 • Sunday</h3>
+          </div>
+          <button type="button" onclick="closeDateDrawer()" class="t-subtle w-9 h-9 rounded-full font-black">✕</button>
+        </div>
+
+        <div id="drawer-status-grid" class="grid grid-cols-2 gap-2.5"></div>
+
+        <!-- Overtime Stepper -->
+        <div class="t-subtle p-3.5 rounded-2xl flex items-center justify-between">
+          <div>
+            <span class="text-xs font-extrabold block">Extra Overtime (+OT Hours)</span>
+            <span id="drawer-ot-rate-lbl" class="text-[10px] t-muted font-semibold">Paid at ₹95.26 / hr</span>
+          </div>
+          <div class="flex items-center gap-2.5">
+            <button type="button" onclick="changeDrawerOT(-0.5)" class="t-card w-9 h-9 rounded-xl border font-black">-</button>
+            <span id="drawer-ot-val" class="w-10 text-center text-sm font-black">0h</span>
+            <button type="button" onclick="changeDrawerOT(0.5)" class="t-card w-9 h-9 rounded-xl border font-black">+</button>
+          </div>
+        </div>
+
+        <div class="hero-gradient text-white p-3.5 rounded-2xl flex items-center justify-between">
+          <div>
+            <span class="text-[10px] text-white/75 uppercase font-bold block">Day Earning Summary</span>
+            <span id="drawer-day-math" class="text-[11px] text-white/90">Gross ₹0.00 • PF ₹0.00</span>
+          </div>
+          <span id="drawer-day-net" class="font-display text-lg font-black">₹0.00</span>
+        </div>
+
+        <button type="button" onclick="closeDateDrawer()"
+          class="w-full py-3.5 rounded-2xl bg-emerald-600 text-white font-black text-sm shadow-md active:scale-98">
+          Done
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // ==================== SINGLE SOURCE OF TRUTH STATE ====================
+    const STORAGE_KEY = 'payease_v5_luxury';
+    const DAY_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const MONTH_FULL_NAMES = [
+      'January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December'
+    ];
+    const MONTH_SHORT_NAMES = [
+      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+    ];
+    const THEME_META = {
+      emerald: { label: 'Emerald', dot: '#34D399' },
+      obsidian: { label: 'Obsidian', dot: '#818CF8' },
+      saffron: { label: 'Saffron', dot: '#FB923C' },
+      oceanic: { label: 'Oceanic', dot: '#38BDF8' }
+    };
+
+    const state = {
+      theme: 'emerald',
+      monthKey: '2026-11',
+      selectedDay: 22,
+      activeView: 'attendance',
+      ledgerFilter: 'ALL',
+      settings: {
+        empName: 'Rahul Sharma',
+        empId: 'EMP-104',
+        baseBasic: 15000,      // 26-day Base Basic
+        baseDA: 8530,          // 26-day Base DA (Total = ₹23,530)
+        weekdayHours: 9.5,     // 9:30 hrs
+        sundayHours: 8.5,      // 8:30 hrs
+        pt: 0,
+        advance: 0,
+        pfOnSunday: false,     // Default OFF: PF strictly on Weekday Basic
+        pfCap1800: false       // Default OFF: scales cleanly across 26/27-day months
+      },
+      attendanceByMonth: {}
+    };
+
+    // ==================== PERSISTENCE ====================
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return;
+        const parsed = JSON.parse(raw);
+        if (parsed.theme && THEME_META[parsed.theme]) state.theme = parsed.theme;
+        if (parsed.monthKey) state.monthKey = parsed.monthKey;
+        if (parsed.selectedDay) state.selectedDay = parsed.selectedDay;
+        if (parsed.settings) state.settings = { ...state.settings, ...parsed.settings };
+        if (parsed.attendanceByMonth) state.attendanceByMonth = parsed.attendanceByMonth;
+      } catch (err) {
+        console.warn('Resetting clean state:', err);
+      }
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({
+          theme: state.theme,
+          monthKey: state.monthKey,
+          selectedDay: state.selectedDay,
+          settings: state.settings,
+          attendanceByMonth: state.attendanceByMonth
+        }));
+      } catch (err) {
+        console.warn('Could not persist state:', err);
+      }
+    }
+
+    // ==================== THEME ENGINE ====================
+    function applyTheme(themeKey, closeDrawerAfter = true) {
+      if (!THEME_META[themeKey]) return;
+      state.theme = themeKey;
+      document.documentElement.setAttribute('data-theme', themeKey);
+      document.getElementById('theme-name-label').textContent = THEME_META[themeKey].label;
+      document.getElementById('theme-dot-preview').style.backgroundColor = THEME_META[themeKey].dot;
+
+      document.querySelectorAll('.theme-opt').forEach(btn => {
+        const isCurrent = btn.getAttribute('data-theme-btn') === themeKey;
+        btn.style.borderColor = isCurrent ? 'var(--accent-primary)' : 'var(--border-card)';
+      });
+
+      saveState();
+      if (closeDrawerAfter) {
+        document.getElementById('theme-drawer').classList.add('hidden');
+        showToast(`Theme: ${THEME_META[themeKey].label}`);
+      }
+    }
+
+    function toggleThemeDrawer() {
+      document.getElementById('theme-drawer').classList.toggle('hidden');
+    }
+
+    // ==================== CALENDAR METADATA & RATES ====================
+    function getMonthInfo(monthKey) {
+      const [yStr, mStr] = monthKey.split('-');
+      const year = parseInt(yStr, 10);
+      const monthIndex = parseInt(mStr, 10) - 1;
+      const totalDays = new Date(year, monthIndex + 1, 0).getDate();
+      const firstWeekday = new Date(year, monthIndex, 1).getDay();
+      const shortLabel = `${MONTH_SHORT_NAMES[monthIndex]} ${year}`;
+      const fullLabel = `${MONTH_FULL_NAMES[monthIndex].toUpperCase()} ${year}`;
+
+      let weekdayCount = 0;
+      const days = [];
+      for (let d = 1; d <= totalDays; d++) {
+        const wIdx = new Date(year, monthIndex, d).getDay();
+        const isSunday = wIdx === 0;
+        if (!isSunday) weekdayCount++;
+        days.push({
+          day: d,
+          weekdayIdx: wIdx,
+          dayName: DAY_LABELS[wIdx],
+          isSunday
+        });
+      }
+      return { year, monthIndex, totalDays, firstWeekday, shortLabel, fullLabel, weekdayCount, days };
+    }
+
+    function getRates() {
+      const baseBasic = Math.max(0, Number(state.settings.baseBasic) || 0);
+      const baseDA = Math.max(0, Number(state.settings.baseDA) || 0);
+      const weekdayHours = 9.5;
+      const sundayHours = 8.5;
+
+      const dailyBasic = baseBasic / 26;
+      const dailyDA = baseDA / 26;
+      const dailyWeekdayGross = (baseBasic + baseDA) / 26; // ₹905.00
+
+      const hourlyRate = dailyWeekdayGross / weekdayHours; // ₹95.263158/hr
+      const hourlyBasic = dailyBasic / weekdayHours;
+      const sundayBasic = hourlyBasic * sundayHours;
+      const sundayGross = hourlyRate * sundayHours;        // ₹809.7368
+
+      const dailyPF = dailyBasic * 0.12;                   // ₹69.2308
+      const sundayPF = state.settings.pfOnSunday ? (sundayBasic * 0.12) : 0;
+
+      return {
+        baseBasic,
+        baseDA,
+        dailyBasic,
+        dailyDA,
+        dailyWeekdayGross,
+        hourlyRate,
+        sundayBasic,
+        sundayGross,
+        dailyPF,
+        sundayPF,
+        dailyWeekdayNet: Math.max(0, dailyWeekdayGross - dailyPF),
+        sundayNet: Math.max(0, sundayGross - sundayPF)
+      };
+    }
+
+    function getDayRecord(monthKey, dayNum) {
+      const mData = state.attendanceByMonth[monthKey] || {};
+      const rec = mData[dayNum];
+      return {
+        status: rec && rec.status ? rec.status : '',
+        ot: rec && rec.ot ? Number(rec.ot) : 0
+      };
+    }
+
+    function setDayRecord(monthKey, dayNum, status, ot) {
+      if (!state.attendanceByMonth[monthKey]) {
+        state.attendanceByMonth[monthKey] = {};
+      }
+      if (!status && (!ot || ot <= 0)) {
+        delete state.attendanceByMonth[monthKey][dayNum];
+      } else {
+        state.attendanceByMonth[monthKey][dayNum] = {
+          status: status || '',
+          ot: Math.max(0, Number(ot) || 0)
+        };
+      }
+      saveState();
+    }
+
+    // ==================== EXACT DAY & MONTH CALCULATIONS ====================
+    function calculateDayEarnings(dayInfo, rec, rates) {
+      let basic = 0;
+      let da = 0;
+      let sundayPay = 0;
+      let pf = 0;
+      let dutyUnits = 0;
+      let sundayUnits = 0;
+
+      if (!dayInfo.isSunday) {
+        if (rec.status === 'P') {
+          basic = rates.dailyBasic;
+          da = rates.dailyDA;
+          pf = rates.dailyPF;
+          dutyUnits = 1.0;
+        } else if (rec.status === 'HD') {
+          basic = rates.dailyBasic * 0.5;
+          da = rates.dailyDA * 0.5;
+          pf = rates.dailyPF * 0.5;
+          dutyUnits = 0.5;
+        }
+      } else {
+        if (rec.status === 'SW') {
+          sundayPay = rates.sundayGross;
+          pf = rates.sundayPF;
+          sundayUnits = 1;
+        }
+      }
+
+      const otHours = Math.max(0, Number(rec.ot) || 0);
+      const otPay = otHours * rates.hourlyRate;
+      const gross = basic + da + sundayPay + otPay;
+      const net = Math.max(0, gross - pf);
+
+      return {
+        basic,
+        da,
+        sundayPay,
+        otHours,
+        otPay,
+        gross,
+        pf,
+        net,
+        dutyUnits,
+        sundayUnits
+      };
+    }
+
+    function calculateMonthTotals() {
+      const mInfo = getMonthInfo(state.monthKey);
+      const rates = getRates();
+
+      let totalDutyDays = 0;
+      let totalSundaysWorked = 0;
+      let totalOtHours = 0;
+
+      let weekdayBasic = 0;
+      let weekdayDA = 0;
+      let totalSundayPay = 0;
+      let totalOtPay = 0;
+      let rawPF = 0;
+
+      const dayRows = mInfo.days.map(dInfo => {
+        const rec = getDayRecord(state.monthKey, dInfo.day);
+        const calc = calculateDayEarnings(dInfo, rec, rates);
+
+        totalDutyDays += calc.dutyUnits;
+        totalSundaysWorked += calc.sundayUnits;
+        totalOtHours += calc.otHours;
+
+        weekdayBasic += calc.basic;
+        weekdayDA += calc.da;
+        totalSundayPay += calc.sundayPay;
+        totalOtPay += calc.otPay;
+        rawPF += calc.pf;
+
+        return { dInfo, rec, calc };
+      });
+
+      const pfDeducted = state.settings.pfCap1800 ? Math.min(1800, rawPF) : rawPF;
+      const otherDeductions = Math.max(0, Number(state.settings.pt) || 0) + Math.max(0, Number(state.settings.advance) || 0);
+
+      const grossSalary = weekdayBasic + weekdayDA + totalSundayPay + totalOtPay;
+      const totalDeductions = pfDeducted + otherDeductions;
+      const netSalary = Math.max(0, grossSalary - totalDeductions);
+
+      return {
+        mInfo,
+        rates,
+        dayRows,
+        totalDutyDays,
+        totalSundaysWorked,
+        totalOtHours,
+        weekdayBasic,
+        weekdayDA,
+        totalSundayPay,
+        totalOtPay,
+        grossSalary,
+        pfDeducted,
+        otherDeductions,
+        totalDeductions,
+        netSalary
+      };
+    }
+
+    // ==================== FORMATTING HELPERS ====================
+    function fmtWhole(val) {
+      return '₹' + Math.round(val || 0).toLocaleString('en-IN');
+    }
+
+    function fmtDec(val) {
+      return '₹' + Number(val || 0).toLocaleString('en-IN', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+    }
+
+    function flashCounter(elId) {
+      const el = document.getElementById(elId);
+      if (!el) return;
+      el.classList.remove('pop-flash');
+      void el.offsetWidth;
+      el.classList.add('pop-flash');
+    }
+
+    function showToast(msg) {
+      const el = document.getElementById('toast-banner');
+      el.textContent = msg;
+      el.classList.remove('hidden');
+      clearTimeout(window._toastTimer);
+      window._toastTimer = setTimeout(() => el.classList.add('hidden'), 1800);
+    }
+
+    // ==================== INTERACTIVE ACTIONS ====================
+    function stepMonth(delta) {
+      const sel = document.getElementById('month-selector');
+      const nextIdx = sel.selectedIndex + delta;
+      if (nextIdx >= 0 && nextIdx < sel.options.length) {
+        sel.selectedIndex = nextIdx;
+        handleMonthChange(sel.value);
+      }
+    }
+
+    function handleDateCellClick(dayNum) {
+      const mInfo = getMonthInfo(state.monthKey);
+      const dInfo = mInfo.days[dayNum - 1];
+      if (!dInfo) return;
+
+      state.selectedDay = dayNum;
+      const oneTap = document.getElementById('one-tap-mode').checked;
+
+      if (oneTap) {
+        const cur = getDayRecord(state.monthKey, dayNum);
+        let nextStatus = '';
+        if (dInfo.isSunday) {
+          if (cur.status === '') nextStatus = 'SW';
+          else if (cur.status === 'SW') nextStatus = 'SO';
+          else nextStatus = '';
+        } else {
+          if (cur.status === '') nextStatus = 'P';
+          else if (cur.status === 'P') nextStatus = 'HD';
+          else if (cur.status === 'HD') nextStatus = 'A';
+          else nextStatus = '';
+        }
+        setDayRecord(state.monthKey, dayNum, nextStatus, cur.ot);
+        renderAll(true);
+      } else {
+        openDateDrawer(dayNum);
+      }
+    }
+
+    function punchSelectedDate(newStatus) {
+      const cur = getDayRecord(state.monthKey, state.selectedDay);
+      setDayRecord(state.monthKey, state.selectedDay, newStatus, cur.ot);
+      renderAll(true);
+    }
+
+    function bulkMarkWeekdaysPresent() {
+      const mInfo = getMonthInfo(state.monthKey);
+      mInfo.days.forEach(d => {
+        if (!d.isSunday) {
+          const cur = getDayRecord(state.monthKey, d.day);
+          setDayRecord(state.monthKey, d.day, 'P', cur.ot);
+        }
+      });
+      renderAll(true);
+      showToast('All Mon–Sat marked Present!');
+    }
+
+    function bulkMarkSundaysWorked() {
+      const mInfo = getMonthInfo(state.monthKey);
+      mInfo.days.forEach(d => {
+        if (d.isSunday) {
+          const cur = getDayRecord(state.monthKey, d.day);
+          setDayRecord(state.monthKey, d.day, 'SW', cur.ot);
+        }
+      });
+      renderAll(true);
+      showToast('All Sundays marked Duty (+8:30h)!');
+    }
+
+    function bulkClearMonth() {
+      state.attendanceByMonth[state.monthKey] = {};
+      saveState();
+      renderAll(true);
+      showToast('Month reset to ₹0');
+    }
+
+    function handleMonthChange(newMonthKey) {
+      state.monthKey = newMonthKey;
+      const mInfo = getMonthInfo(newMonthKey);
+      if (state.selectedDay > mInfo.totalDays) {
+        state.selectedDay = 1;
+      }
+      saveState();
+      renderAll(false);
+    }
+
+    function updateTapModeHint() {
+      const isOneTap = document.getElementById('one-tap-mode').checked;
+      document.getElementById('cal-tap-hint').textContent = isOneTap
+        ? '1-Tap Cycle ON • Tap any date tile'
+        : 'Modal Mode • Tap any date for +OT & options';
+    }
+
+    // ==================== DATE ACTION MODAL DRAWER ====================
+    function openDateDrawer(dayNum) {
+      state.selectedDay = dayNum;
+      saveState();
+      renderAll(false);
+      document.getElementById('date-drawer').classList.remove('hidden');
+      syncDrawerContent();
+    }
+
+    function closeDateDrawer() {
+      document.getElementById('date-drawer').classList.add('hidden');
+    }
+
+    function syncDrawerContent() {
+      const drawer = document.getElementById('date-drawer');
+      if (drawer.classList.contains('hidden')) return;
+
+      const mInfo = getMonthInfo(state.monthKey);
+      const dInfo = mInfo.days[state.selectedDay - 1];
+      const rec = getDayRecord(state.monthKey, state.selectedDay);
+      const rates = getRates();
+      const calc = calculateDayEarnings(dInfo, rec, rates);
+
+      document.getElementById('drawer-day-type').textContent = dInfo.isSunday ? 'Sunday (8:30h Duty / Off)' : 'Working Weekday (9:30h)';
+      document.getElementById('drawer-date-heading').textContent = `${String(dInfo.day).padStart(2, '0')} ${mInfo.shortLabel} • ${dInfo.dayName}`;
+      document.getElementById('drawer-ot-rate-lbl').textContent = `Paid at ${fmtDec(rates.hourlyRate)} / hr`;
+      document.getElementById('drawer-ot-val').textContent = `${rec.ot}h`;
+      document.getElementById('drawer-day-math').textContent = `Gross ${fmtDec(calc.gross)} • PF -${fmtDec(calc.pf)}`;
+      document.getElementById('drawer-day-net').textContent = fmtDec(calc.net);
+
+      const grid = document.getElementById('drawer-status-grid');
+      if (dInfo.isSunday) {
+        grid.innerHTML = `
+          <button type="button" onclick="setDrawerStatus('SW')"
+            class="p-3.5 rounded-2xl border-2 text-left transition ${rec.status === 'SW' ? 'border-amber-500 bg-amber-500/15' : 't-subtle border-transparent'}">
+            <span class="text-xs font-black block">★ Sunday Duty (8:30h)</span>
+            <span class="text-[11px] font-extrabold text-amber-500">+${fmtDec(rates.sundayGross)}</span>
+          </button>
+          <button type="button" onclick="setDrawerStatus('SO')"
+            class="p-3.5 rounded-2xl border-2 text-left transition ${rec.status === 'SO' ? 'border-slate-500 bg-slate-500/15' : 't-subtle border-transparent'}">
+            <span class="text-xs font-black block">🛌 Sunday Off</span>
+            <span class="text-[11px] font-bold t-muted">₹0.00</span>
+          </button>
+          <button type="button" onclick="setDrawerStatus('')"
+            class="col-span-2 py-2.5 rounded-2xl border border-dashed border-slate-400/50 text-xs font-extrabold t-muted">
+            ↺ Clear Status
+          </button>
+        `;
+      } else {
+        grid.innerHTML = `
+          <button type="button" onclick="setDrawerStatus('P')"
+            class="p-3.5 rounded-2xl border-2 text-left transition ${rec.status === 'P' ? 'border-emerald-500 bg-emerald-500/15' : 't-subtle border-transparent'}">
+            <span class="text-xs font-black block">✓ Present (9:30h)</span>
+            <span class="text-[11px] font-extrabold text-emerald-500">${fmtDec(rates.dailyWeekdayGross)}</span>
+          </button>
+          <button type="button" onclick="setDrawerStatus('HD')"
+            class="p-3.5 rounded-2xl border-2 text-left transition ${rec.status === 'HD' ? 'border-amber-500 bg-amber-500/15' : 't-subtle border-transparent'}">
+            <span class="text-xs font-black block">½ Half Day (4:45h)</span>
+            <span class="text-[11px] font-extrabold text-amber-500">${fmtDec(rates.dailyWeekdayGross * 0.5)}</span>
+          </button>
+          <button type="button" onclick="setDrawerStatus('A')"
+            class="p-3.5 rounded-2xl border-2 text-left transition ${rec.status === 'A' ? 'border-rose-500 bg-rose-500/15' : 't-subtle border-transparent'}">
+            <span class="text-xs font-black block">✕ Absent</span>
+            <span class="text-[11px] font-bold text-rose-500">₹0.00</span>
+          </button>
+          <button type="button" onclick="setDrawerStatus('')"
+            class="p-3.5 rounded-2xl border border-dashed border-slate-400/50 text-left">
+            <span class="text-xs font-black block">↺ Clear</span>
+            <span class="text-[11px] font-bold t-muted">Unmarked</span>
+          </button>
+        `;
+      }
+    }
+
+    function setDrawerStatus(newStatus) {
+      const cur = getDayRecord(state.monthKey, state.selectedDay);
+      setDayRecord(state.monthKey, state.selectedDay, newStatus, cur.ot);
+      renderAll(true);
+      syncDrawerContent();
+    }
+
+    function changeDrawerOT(delta) {
+      const cur = getDayRecord(state.monthKey, state.selectedDay);
+      const nextOT = Math.min(16, Math.max(0, cur.ot + delta));
+      setDayRecord(state.monthKey, state.selectedDay, cur.status, nextOT);
+      renderAll(true);
+      syncDrawerContent();
+    }
+
+    // ==================== LEDGER FILTERING ====================
+    function setLedgerFilter(filterKey) {
+      state.ledgerFilter = filterKey;
+      document.querySelectorAll('.ledger-chip').forEach(btn => {
+        const active = btn.getAttribute('data-lfilter') === filterKey;
+        if (active) {
+          btn.classList.add('bg-emerald-600', 'text-white');
+          btn.classList.remove('t-subtle');
+        } else {
+          btn.classList.remove('bg-emerald-600', 'text-white');
+          btn.classList.add('t-subtle');
+        }
+      });
+      renderLedgerOnly();
+    }
+
+    function renderLedgerOnly() {
+      const t = calculateMonthTotals();
+      const query = (document.getElementById('ledger-search').value || '').trim().toLowerCase();
+
+      let tbodyHtml = '';
+      t.dayRows.forEach(({ dInfo, rec, calc }) => {
+        if (state.ledgerFilter === 'WORKED' && calc.net <= 0) return;
+        if (state.ledgerFilter === 'SUNDAYS' && !dInfo.isSunday) return;
+        if (state.ledgerFilter === 'UNMARKED' && rec.status !== '') return;
+
+        if (query) {
+          const hay = `${dInfo.day} ${dInfo.dayName} ${rec.status}`.toLowerCase();
+          if (!hay.includes(query)) return;
+        }
+
+        const rowTint = dInfo.isSunday ? 'bg-amber-500/10' : '';
+        const sunOtAmt = calc.sundayPay + calc.otPay;
+        const badgeLabel = rec.status || '—';
+        let badgeCls = 't-subtle t-muted';
+        if (rec.status === 'P') badgeCls = 'bg-emerald-500/20 text-emerald-500';
+        else if (rec.status === 'HD') badgeCls = 'bg-amber-500/20 text-amber-500';
+        else if (rec.status === 'A') badgeCls = 'bg-rose-500/20 text-rose-500';
+        else if (rec.status === 'SW') badgeCls = 'bg-purple-500/20 text-purple-400';
+        else if (rec.status === 'SO') badgeCls = 'bg-slate-500/20 t-muted';
+
+        tbodyHtml += `
+          <tr onclick="openDateDrawer(${dInfo.day})" class="${rowTint} cursor-pointer hover:bg-emerald-500/5">
+            <td class="py-2.5 px-2.5 whitespace-nowrap font-bold">
+              ${String(dInfo.day).padStart(2, '0')} <span class="text-[10px] ${dInfo.isSunday ? 'text-amber-500 font-black' : 't-muted'}">${dInfo.dayName}</span>
+            </td>
+            <td class="py-2.5 px-1 text-center">
+              <span class="px-2 py-0.5 rounded-md text-[9px] font-black ${badgeCls}">${badgeLabel}</span>
+            </td>
+            <td class="py-2.5 px-1.5 text-right t-muted">${calc.basic > 0 ? calc.basic.toFixed(0) : '-'}</td>
+            <td class="py-2.5 px-1.5 text-right t-muted">${calc.da > 0 ? calc.da.toFixed(0) : '-'}</td>
+            <td class="py-2.5 px-1.5 text-right font-bold text-amber-500">${sunOtAmt > 0 ? '+' + sunOtAmt.toFixed(0) : '-'}</td>
+            <td class="py-2.5 px-1.5 text-right text-rose-500">${calc.pf > 0 ? '-' + calc.pf.toFixed(0) : '-'}</td>
+            <td class="py-2.5 px-2.5 text-right font-black text-emerald-500">${calc.net > 0 ? fmtWhole(calc.net) : '-'}</td>
+          </tr>
+        `;
+      });
+
+      document.getElementById('register-tbody').innerHTML = tbodyHtml || `
+        <tr><td colspan="7" class="py-6 text-center text-xs t-muted font-bold">No matching days found</td></tr>
+      `;
+    }
+
+    // ==================== SETTINGS & VIEW NAVIGATION ====================
+    function updateSettingsFromInputs() {
+      state.settings.empName = document.getElementById('inp-emp-name').value || 'Employee';
+      state.settings.empId = document.getElementById('inp-emp-id').value || 'EMP-104';
+      state.settings.baseBasic = Math.max(0, parseFloat(document.getElementById('inp-base-basic').value) || 0);
+      state.settings.baseDA = Math.max(0, parseFloat(document.getElementById('inp-base-da').value) || 0);
+      state.settings.pt = Math.max(0, parseFloat(document.getElementById('inp-pt').value) || 0);
+      state.settings.advance = Math.max(0, parseFloat(document.getElementById('inp-advance').value) || 0);
+      state.settings.pfOnSunday = document.getElementById('chk-pf-sunday').checked;
+      state.settings.pfCap1800 = document.getElementById('chk-pf-cap').checked;
+
+      saveState();
+      renderAll(false);
+    }
+
+    function resetToStandard23530() {
+      state.settings.baseBasic = 15000;
+      state.settings.baseDA = 8530;
+      state.settings.pt = 0;
+      state.settings.advance = 0;
+      state.settings.pfOnSunday = false;
+      state.settings.pfCap1800 = false;
+      syncInputsFromSettings();
+      saveState();
+      renderAll(true);
+      showToast('Reset to ₹23,530 (₹15k Basic + ₹8,530 DA)');
+    }
+
+    function syncInputsFromSettings() {
+      document.getElementById('month-selector').value = state.monthKey;
+      document.getElementById('inp-emp-name').value = state.settings.empName;
+      document.getElementById('inp-emp-id').value = state.settings.empId;
+      document.getElementById('inp-base-basic').value = state.settings.baseBasic;
+      document.getElementById('inp-base-da').value = state.settings.baseDA;
+      document.getElementById('inp-pt').value = state.settings.pt;
+      document.getElementById('inp-advance').value = state.settings.advance;
+      document.getElementById('chk-pf-sunday').checked = !!state.settings.pfOnSunday;
+      document.getElementById('chk-pf-cap').checked = !!state.settings.pfCap1800;
+    }
+
+    function switchView(viewName) {
+      state.activeView = viewName;
+      ['attendance', 'register', 'payslip'].forEach(v => {
+        document.getElementById('view-' + v).classList.toggle('hidden', v !== viewName);
+        const nav = document.getElementById('nav-' + v);
+        if (v === viewName) {
+          nav.classList.add('accent-pill', 'font-extrabold');
+          nav.classList.remove('t-muted', 'font-bold');
+        } else {
+          nav.classList.remove('accent-pill', 'font-extrabold');
+          nav.classList.add('t-muted', 'font-bold');
+        }
+      });
+    }
+
+    function copyWhatsAppSummary() {
+      const t = calculateMonthTotals();
+      const lines = [
+        `*PAYSLIP — ${t.mInfo.fullLabel}*`,
+        `Employee: ${state.settings.empName} (${state.settings.empId})`,
+        `Duty: ${t.totalDutyDays.toFixed(1)} Days + ${t.totalSundaysWorked} Sundays`,
+        `------------------------`,
+        `Weekday Basic: ${fmtDec(t.weekdayBasic)}`,
+        `Weekday DA: ${fmtDec(t.weekdayDA)}`,
+        `Sunday Duty Pay (8:30h): +${fmtDec(t.totalSundayPay)}`,
+        t.totalOtPay > 0 ? `Overtime (${t.totalOtHours}h): +${fmtDec(t.totalOtPay)}` : null,
+        `Gross Salary: ${fmtDec(t.grossSalary)}`,
+        `EPF (12% Basic): -${fmtDec(t.pfDeducted)}`,
+        t.otherDeductions > 0 ? `Other Deductions: -${fmtDec(t.otherDeductions)}` : null,
+        `------------------------`,
+        `*Net In-Hand Salary: ${fmtWhole(t.netSalary)}*`
+      ].filter(Boolean).join('\n');
+
+      const ta = document.createElement('textarea');
+      ta.value = lines;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      showToast('Payslip summary copied!');
+    }
+
+    // ==================== MASTER UI RENDERER ====================
+    function renderAll(animateNumbers = false) {
+      const t = calculateMonthTotals();
+      const { mInfo, rates } = t;
+
+      // 1. Hero Card & Progress Bar
+      document.getElementById('hdr-net-salary').textContent = fmtWhole(t.netSalary);
+      document.getElementById('hdr-gross-salary').textContent = fmtDec(t.grossSalary);
+      document.getElementById('hdr-pf-deducted').textContent = `- ${fmtDec(t.pfDeducted)}`;
+      document.getElementById('hdr-duty-counter').textContent = `${t.totalDutyDays.toFixed(1)}d + ${t.totalSundaysWorked} Sun`;
+      document.getElementById('hdr-rate-hint').textContent = `${fmtWhole(rates.dailyWeekdayGross)}/d • Sun ${fmtDec(rates.sundayGross)}`;
+
+      const targetDays = mInfo.weekdayCount || 26;
+      const pct = Math.min(100, Math.round((t.totalDutyDays / targetDays) * 100));
+      document.getElementById('hdr-progress-label').textContent = `${t.totalDutyDays.toFixed(1)} / ${targetDays} Working Days (${mInfo.shortLabel})`;
+      document.getElementById('hdr-progress-pct').textContent = `${pct}%`;
+      document.getElementById('hdr-progress-bar').style.width = `${pct}%`;
+
+      // 2. Highlighted Sunday Duty Earnings Card
+      document.getElementById('sun-card-sub').textContent = `${t.totalSundaysWorked} Sun Worked • ${fmtDec(rates.sundayGross)} / Sun`;
+      document.getElementById('sun-card-total').textContent = `+${fmtWhole(t.totalSundayPay)}`;
+
+      if (animateNumbers) {
+        flashCounter('hdr-net-salary');
+        flashCounter('sun-card-total');
+      }
+
+      // 3. Selected Date Quick Punch Bar
+      const selInfo = mInfo.days[state.selectedDay - 1] || mInfo.days[0];
+      const selRec = getDayRecord(state.monthKey, selInfo.day);
+      const selCalc = calculateDayEarnings(selInfo, selRec, rates);
+
+      document.getElementById('qp-date-title').textContent = `${String(selInfo.day).padStart(2, '0')} ${mInfo.shortLabel} • ${selInfo.dayName}`;
+      const statusNames = { '': 'Unmarked', P: 'Present', HD: 'Half Day', A: 'Absent', SW: 'Sunday Duty', SO: 'Sunday Off' };
+      document.getElementById('qp-day-net-badge').textContent = `${statusNames[selRec.status] || 'Unmarked'} • ${fmtDec(selCalc.net)}`;
+
+      const qpContainer = document.getElementById('qp-buttons-container');
+      if (selInfo.isSunday) {
+        qpContainer.className = 'grid grid-cols-3 gap-2';
+        qpContainer.innerHTML = `
+          <button type="button" onclick="punchSelectedDate('SW')"
+            class="py-3 px-2 rounded-2xl text-[11px] font-black transition active:scale-95 ${selRec.status === 'SW' ? 'bg-amber-500 text-slate-950 shadow-md ring-2 ring-amber-300' : 'sun-card border'}">
+            ★ Sun Duty (+${fmtWhole(rates.sundayGross)})
+          </button>
+          <button type="button" onclick="punchSelectedDate('SO')"
+            class="py-3 px-2 rounded-2xl text-[11px] font-extrabold transition active:scale-95 ${selRec.status === 'SO' ? 'bg-slate-700 text-white' : 't-subtle'}">
+            🛌 Sun Off (₹0)
+          </button>
+          <button type="button" onclick="punchSelectedDate('')"
+            class="py-3 px-2 rounded-2xl text-[11px] font-extrabold border border-dashed border-slate-400/50 t-muted active:scale-95">
+            ↺ Clear
+          </button>
+        `;
+      } else {
+        qpContainer.className = 'grid grid-cols-4 gap-1.5';
+        qpContainer.innerHTML = `
+          <button type="button" onclick="punchSelectedDate('P')"
+            class="py-3 px-1.5 rounded-2xl text-[11px] font-black transition active:scale-95 ${selRec.status === 'P' ? 'bg-emerald-600 text-white shadow-md' : 'bg-emerald-500/10 text-emerald-600 border border-emerald-500/25'}">
+            ✓ P (${fmtWhole(rates.dailyWeekdayGross)})
+          </button>
+          <button type="button" onclick="punchSelectedDate('HD')"
+            class="py-3 px-1.5 rounded-2xl text-[11px] font-black transition active:scale-95 ${selRec.status === 'HD' ? 'bg-amber-500 text-white shadow-md' : 'bg-amber-500/10 text-amber-600 border border-amber-500/25'}">
+            ½ HD (${fmtWhole(rates.dailyWeekdayGross * 0.5)})
+          </button>
+          <button type="button" onclick="punchSelectedDate('A')"
+            class="py-3 px-1.5 rounded-2xl text-[11px] font-black transition active:scale-95 ${selRec.status === 'A' ? 'bg-rose-600 text-white shadow-md' : 'bg-rose-500/10 text-rose-500 border border-rose-500/25'}">
+            ✕ A (₹0)
+          </button>
+          <button type="button" onclick="punchSelectedDate('')"
+            class="py-3 px-1.5 rounded-2xl text-[11px] font-extrabold border border-dashed border-slate-400/50 t-muted active:scale-95">
+            ↺ Clear
+          </button>
+        `;
+      }
+
+      // 4. Calendar Grid
+      document.getElementById('sun-header-rate').textContent = fmtWhole(rates.sundayGross);
+      const gridEl = document.getElementById('calendar-grid');
+      let calHtml = '';
+
+      for (let i = 0; i < mInfo.firstWeekday; i++) {
+        calHtml += `<div class="h-16 rounded-2xl opacity-30 t-subtle"></div>`;
+      }
+
+      t.dayRows.forEach(({ dInfo, rec, calc }) => {
+        const isSelected = dInfo.day === state.selectedDay;
+        let boxStyle = 't-card border-dashed';
+        let badgeStyle = 't-subtle t-muted';
+        let amtStyle = 't-muted opacity-50';
+        let badgeTxt = '—';
+        let amtTxt = '₹0';
+
+        if (rec.status === 'P') {
+          boxStyle = 'bg-emerald-500/15 border-solid border-emerald-500/50';
+          badgeStyle = 'bg-emerald-600 text-white';
+          amtStyle = 'text-emerald-500';
+          badgeTxt = 'P';
+          amtTxt = fmtWhole(calc.net);
+        } else if (rec.status === 'HD') {
+          boxStyle = 'bg-amber-500/15 border-solid border-amber-500/50';
+          badgeStyle = 'bg-amber-500 text-white';
+          amtStyle = 'text-amber-500';
+          badgeTxt = 'HD';
+          amtTxt = fmtWhole(calc.net);
+        } else if (rec.status === 'A') {
+          boxStyle = 'bg-rose-500/15 border-solid border-rose-500/40';
+          badgeStyle = 'bg-rose-600 text-white';
+          amtStyle = 'text-rose-500';
+          badgeTxt = 'A';
+          amtTxt = '₹0';
+        } else if (rec.status === 'SW') {
+          boxStyle = 'sun-card border-solid';
+          badgeStyle = 'bg-purple-600 text-white';
+          amtStyle = 'font-black';
+          badgeTxt = '★SW';
+          amtTxt = '+' + fmtWhole(calc.net);
+        } else if (rec.status === 'SO') {
+          boxStyle = 't-subtle border-solid border-slate-400/40';
+          badgeStyle = 'bg-slate-600 text-white';
+          amtStyle = 't-muted';
+          badgeTxt = 'SO';
+          amtTxt = '₹0';
+        } else if (dInfo.isSunday) {
+          boxStyle = 'sun-card border-dashed';
+          badgeStyle = 'bg-amber-500/20';
+          amtStyle = 'opacity-75';
+          badgeTxt = 'SUN';
+          amtTxt = calc.net > 0 ? '+' + fmtWhole(calc.net) : '₹0';
+        } else if (calc.net > 0) {
+          amtStyle = 'text-sky-500';
+          amtTxt = '+' + fmtWhole(calc.net);
+        }
+
+        const selRing = isSelected ? 'ring-2 ring-emerald-500 ring-offset-1' : '';
+        const otMarker = rec.ot > 0 ? `<span class="w-1.5 h-1.5 rounded-full bg-sky-500 ml-0.5"></span>` : '';
+
+        calHtml += `
+          <button type="button" onclick="handleDateCellClick(${dInfo.day})"
+            class="h-16 rounded-2xl border ${boxStyle} ${selRing} px-0.5 py-1.5 flex flex-col items-center justify-between active:scale-90 transition">
+            <span class="text-[11px] font-black leading-none flex items-center">${dInfo.day}${otMarker}</span>
+            <span class="text-[8px] font-black px-1.5 py-0.5 rounded-md ${badgeStyle} leading-none">${badgeTxt}</span>
+            <span class="text-[9px] font-extrabold ${amtStyle} leading-none">${amtTxt}</span>
+          </button>
+        `;
+      });
+
+      gridEl.innerHTML = calHtml;
+
+      // 5. Breakdown Card
+      document.getElementById('brk-month-tag').textContent = mInfo.shortLabel;
+      document.getElementById('brk-basic-label').textContent = `Weekday Basic (${t.totalDutyDays.toFixed(1)}d × ${fmtDec(rates.dailyBasic)})`;
+      document.getElementById('brk-basic-val').textContent = fmtDec(t.weekdayBasic);
+
+      document.getElementById('brk-da-label').textContent = `Weekday DA (${t.totalDutyDays.toFixed(1)}d × ${fmtDec(rates.dailyDA)})`;
+      document.getElementById('brk-da-val').textContent = fmtDec(t.weekdayDA);
+
+      document.getElementById('brk-sunday-sub').textContent = `${t.totalSundaysWorked} Sun × 8:30h @ ${fmtDec(rates.hourlyRate)}/hr`;
+      document.getElementById('brk-sunday-val').textContent = `+ ${fmtDec(t.totalSundayPay)}`;
+
+      document.getElementById('brk-ot-label').textContent = `Overtime Earnings (${t.totalOtHours.toFixed(1)}h × ${fmtDec(rates.hourlyRate)}/hr)`;
+      document.getElementById('brk-ot-val').textContent = `+ ${fmtDec(t.totalOtPay)}`;
+
+      document.getElementById('brk-gross-val').textContent = fmtDec(t.grossSalary);
+      document.getElementById('brk-pf-label').textContent = state.settings.pfOnSunday
+        ? 'Less: EPF @ 12% (Weekday + Sunday Basic)'
+        : 'Less: EPF @ 12% (Weekday Basic only)';
+      document.getElementById('brk-pf-val').textContent = `- ${fmtDec(t.pfDeducted)}`;
+
+      const otherDedRow = document.getElementById('brk-other-ded-row');
+      if (t.otherDeductions > 0) {
+        otherDedRow.classList.remove('hidden');
+        document.getElementById('brk-other-ded-val').textContent = `- ${fmtDec(t.otherDeductions)}`;
+      } else {
+        otherDedRow.classList.add('hidden');
+      }
+
+      document.getElementById('brk-net-val').textContent = fmtWhole(t.netSalary);
+
+      // 6. Ledger Summary & Table
+      document.getElementById('reg-month-pill').textContent = mInfo.shortLabel;
+      document.getElementById('reg-sum-days').textContent = `${t.totalDutyDays.toFixed(1)}d`;
+      document.getElementById('reg-sum-sun').textContent = fmtWhole(t.totalSundayPay);
+      document.getElementById('reg-sum-pf').textContent = fmtWhole(t.pfDeducted);
+      document.getElementById('reg-sum-net').textContent = fmtWhole(t.netSalary);
+
+      renderLedgerOnly();
+
+      document.getElementById('register-tfoot').innerHTML = `
+        <tr>
+          <td colspan="2" class="py-2.5 px-2.5">TOTAL</td>
+          <td class="py-2.5 px-1.5 text-right">${fmtWhole(t.weekdayBasic)}</td>
+          <td class="py-2.5 px-1.5 text-right">${fmtWhole(t.weekdayDA)}</td>
+          <td class="py-2.5 px-1.5 text-right text-amber-300">+${fmtWhole(t.totalSundayPay + t.totalOtPay)}</td>
+          <td class="py-2.5 px-1.5 text-right text-rose-300">-${fmtWhole(t.pfDeducted)}</td>
+          <td class="py-2.5 px-2.5 text-right text-emerald-300">${fmtWhole(t.netSalary)}</td>
+        </tr>
+      `;
+
+      // 7. Payslip & Rate Card
+      document.getElementById('rate-card-hourly').textContent = `${fmtDec(rates.hourlyRate)} / hr`;
+      document.getElementById('rate-card-basic').textContent = fmtDec(rates.dailyBasic);
+      document.getElementById('rate-card-da').textContent = fmtDec(rates.dailyDA);
+      document.getElementById('rate-card-weekday').textContent = fmtDec(rates.dailyWeekdayGross);
+      document.getElementById('rate-card-sunday').textContent = fmtDec(rates.sundayGross);
+      document.getElementById('rate-card-pf').textContent = `-${fmtDec(rates.dailyPF)}`;
+      document.getElementById('rate-card-net').textContent = fmtDec(rates.dailyWeekdayNet);
+
+      document.getElementById('slip-month-title').textContent = mInfo.fullLabel;
+      document.getElementById('slip-emp-name').textContent = `${state.settings.empName} (${state.settings.empId})`;
+      document.getElementById('slip-att-summary').textContent = `${t.totalDutyDays.toFixed(1)}d + ${t.totalSundaysWorked} Sun`;
+      document.getElementById('slip-basic').textContent = fmtDec(t.weekdayBasic);
+      document.getElementById('slip-da').textContent = fmtDec(t.weekdayDA);
+      document.getElementById('slip-sunday').textContent = `+ ${fmtDec(t.totalSundayPay)}`;
+      document.getElementById('slip-ot').textContent = `+ ${fmtDec(t.totalOtPay)}`;
+      document.getElementById('slip-gross').textContent = fmtDec(t.grossSalary);
+      document.getElementById('slip-pf').textContent = `- ${fmtDec(t.pfDeducted)}`;
+      document.getElementById('slip-other-ded').textContent = `- ${fmtDec(t.otherDeductions)}`;
+      document.getElementById('slip-net').textContent = fmtWhole(t.netSalary);
+    }
+
+    // ==================== BACKUP & RESTORE ====================
+    function exportPayrollBackup() {
+      const backup = {
+        app: 'Payroll',
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        data: {
+          theme: state.theme,
+          monthKey: state.monthKey,
+          selectedDay: state.selectedDay,
+          settings: state.settings,
+          attendanceByMonth: state.attendanceByMonth
+        }
+      };
+      const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Payroll-Backup-${state.monthKey}.json`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      showToast('Backup downloaded');
+    }
+
+    async function importPayrollBackup(event) {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+      try {
+        const parsed = JSON.parse(await file.text());
+        const data = parsed && parsed.data ? parsed.data : parsed;
+        if (!data || typeof data !== 'object' || !data.settings || !data.attendanceByMonth) {
+          throw new Error('Invalid backup file');
+        }
+        if (!confirm('Restore this backup? Current Payroll data on this browser will be replaced.')) {
+          event.target.value = '';
+          return;
+        }
+        if (data.theme && THEME_META[data.theme]) state.theme = data.theme;
+        if (typeof data.monthKey === 'string') state.monthKey = data.monthKey;
+        if (Number.isInteger(data.selectedDay)) state.selectedDay = data.selectedDay;
+        state.settings = { ...state.settings, ...data.settings };
+        state.attendanceByMonth = data.attendanceByMonth;
+        saveState();
+        syncInputsFromSettings();
+        applyTheme(state.theme, false);
+        renderAll(false);
+        showToast('Backup restored');
+      } catch (err) {
+        alert('Backup file could not be restored. Please choose a valid Payroll backup.');
+      } finally {
+        event.target.value = '';
+      }
+    }
+
+    // ==================== BOOTSTRAP ====================
+    window.addEventListener('DOMContentLoaded', () => {
+      loadState();
+      applyTheme(state.theme, false);
+      syncInputsFromSettings();
+      renderAll(false);
+    });
+  </script>
+</body>
+</html>
